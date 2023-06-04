@@ -1,0 +1,59 @@
+-- VIEW DATASET
+SELECT *
+FROM IMDBTop250MoviesCleanedIMDBTop250Movies
+
+--RENAME TABLE NAME
+ALTER TABLE IMDBTop250MoviesCleanedIMDBTop250Movies RENAME TO Movies
+
+--VIEW MOVIES DATASET 
+SELECT *
+FROM Movies
+
+--TOP 5 MOVIES BY BUDGET
+SELECT name, budget
+FROM Movies
+ORDER BY budget DESC
+LIMIT 5
+
+--UPDATE CURRENCY: Princess Mononoke
+UPDATE Movies
+SET budget = REPLACE(budget, 2400000000,23500000)
+
+--UPDATE CURRENCY: 3 IdiotsMovies
+UPDATE Movies
+SET budget = REPLACE(budget, 550000000,6700000)
+
+-- TOP 5 MOVIES by RATING
+SELECT name, rating
+FROM Movies
+ORDER BY rating DESC
+LIMIT 5
+
+-- TOP 5 BOX-OFFICE HITS 
+SELECT name, box_office
+FROM Movies
+ORDER BY box_office DESC
+LIMIT 5
+
+--TOP 10 HIGHEST PROFITS 
+SELECT name, (box_office - budget) AS profit 
+FROM Movies 
+ORDER BY profit DESC
+LIMIT 10
+
+--BOTTOM 10 MOVIES by PROFITS 
+SELECT name, (box_office - budget) AS profit 
+FROM Movies 
+ORDER BY profit 
+LIMIT 10
+
+--TOP 5 GENRE
+SELECT genre, COUNT(*) AS genre_count
+FROM (
+  SELECT TRIM(value) AS genre
+  FROM Movies
+  CROSS JOIN json_each('["' || REPLACE(genre, ',', '","') || '"]')
+)
+GROUP BY genre
+ORDER BY genre_count DESC
+LIMIT 5
